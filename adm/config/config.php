@@ -9,7 +9,7 @@ const DBR = "d/m/Y";
 /*var_dump(
     scandir("install")
 );*/
-$handle = fopen("install/config.txt", "r");
+$handle = fopen("install/config/config.txt", "r");
 $result = explode(";", fgets($handle));
 fclose($handle);
 

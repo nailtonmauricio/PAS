@@ -4,7 +4,7 @@ session_start();
 var_dump(
         scandir("install")
 );
-if(!in_array("config.txt", scandir("install"))){
+if(!in_array("config.txt", scandir("install/config"))){
     $_SESSION ["msg"] = "<div class='alert alert-warning alert-dismissible text-center'> "
         . "<button type='button' class='close' data-dismiss='alert'>"
         . "<span aria-hidden='true'>&times;</span>"

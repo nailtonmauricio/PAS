@@ -1,12 +1,8 @@
 <?php
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-if (!isset($_SESSION['check'])) {
-    $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible'> "
-            . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
+
+if (!isset($_SESSION["check"])) {
+    $_SESSION ["msg"] = "<div class='alert alert-danger alert-dismissible'> "
+            . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
             . "</button><strong>Aviso!&nbsp;</stron>"
             . "Área restrita, faça login para acessar.</div>";
@@ -27,9 +23,9 @@ if (!isset($_SESSION['check'])) {
     ?>
     <div class="page-header">
         <?php
-        if (isset($_SESSION['msg'])) {
-            echo $_SESSION['msg'];
-            unset($_SESSION['msg']);
+        if (isset($_SESSION["msg"])) {
+            echo $_SESSION["msg"];
+            unset($_SESSION["msg"]);
         }
 
         $button_edit = load('edit/edit_usuarios', $conn);
@@ -42,13 +38,13 @@ if (!isset($_SESSION['check'])) {
         $result_pg = 5;
         $ini_pag = ($result_pg * $pg) - $result_pg;
         // Fim da paginação.
-        if ($_SESSION['nva_user_id'] == 1) {
-            $sql = "SELECT usuarios.id, usuarios.stu_id, UPPER(usuarios.nome) AS nome, UPPER(usuarios.usuario) AS usuario, usuarios.nva_id, nv_acessos.nome AS nv_nome, st_usuarios.nome AS situacao FROM usuarios JOIN st_usuarios ON usuarios.stu_id =  st_usuarios.id JOIN nv_acessos ON usuarios.nva_id = nv_acessos.id ORDER BY usuarios.id LIMIT :ini_pag, :result_pg";
+        if ($_SESSION["credentials"]["access_level"] == 1) {
+            $sql = "SELECT u.id, u.situation, UPPER(u.name) AS nome, UPPER(u.user_name) AS usuario, u.access_level, al.name AS nv_nome FROM users AS u JOIN access_level AS al ON u.access_level = al.id ORDER BY u.id LIMIT :ini_pag, :result_pg";
             $res = $conn ->prepare($sql);
             $res ->bindValue(":ini_pag", $ini_pag, PDO::PARAM_INT);
             $res ->bindValue(":result_pg", $result_pg, PDO::PARAM_INT);
         } else {
-            $sql = "SELECT usuarios.id, usuarios.stu_id, UPPER(usuarios.nome) AS nome, UPPER(usuarios.usuario) AS usuario, usuarios.nva_id, nv_acessos.nome AS nv_nome, st_usuarios.nome AS situacao FROM usuarios JOIN st_usuarios ON usuarios.stu_id =  st_usuarios.id JOIN nv_acessos ON usuarios.nva_id = nv_acessos.id WHERE ordem > (SELECT ordem FROM nv_acessos WHERE id =:nva_user_id) ORDER BY usuarios.id LIMIT :ini_pag, :result_pg";
+            $sql = "SELECT u.id, u.situation, UPPER(u.nome) AS name, UPPER(u.user_name) AS usuario, u.access_level, al.name AS nv_nome FROM users AS u JOIN access_level AS al ON users.access_level = al.id WHERE position > (SELECT position FROM access_level WHERE id =:nva_user_id) ORDER BY u.id LIMIT :ini_pag, :result_pg";
             $res = $conn ->prepare($sql);
             $res ->bindValue(":nva_user_id", $_SESSION["nva_user_id"], PDO::PARAM_INT);
             $res ->bindValue(":ini_pag", $ini_pag, PDO::PARAM_INT);
@@ -56,6 +52,10 @@ if (!isset($_SESSION['check'])) {
         }
         $res ->execute();
         $row = $res ->fetchAll(PDO::FETCH_ASSOC);
+
+        var_dump(
+                $row
+        );
         ?>
     </div>
     <div class="row">
@@ -79,15 +79,18 @@ if (!isset($_SESSION['check'])) {
         <?php
             	$busca = filter_input(INPUT_GET, 'q', FILTER_SANITIZE_SPECIAL_CHARS);
             	if(!empty($busca)){
-            		$sql = "SELECT usuarios.id, usuarios.stu_id, UPPER(usuarios.nome) AS nome, UPPER(usuarios.usuario) AS usuario, usuarios.nva_id, 
-                    nv_acessos.nome AS nv_nome, st_usuarios.nome AS situacao FROM usuarios
-                    JOIN st_usuarios ON usuarios.stu_id =  st_usuarios.id
-                    JOIN nv_acessos ON usuarios.nva_id = nv_acessos.id
-                 	WHERE usuarios.nome LIKE :busca OR st_usuarios.nome LIKE :busca";
+            		$sql = "SELECT u.id, u.situation, UPPER(u.name) AS nome, UPPER(u.user_name) AS usuario, u.access_level, 
+                    al.name AS nv_nome, u.situation FROM users AS u
+                    JOIN access_level AS al ON u.access_level = al.id
+                 	WHERE u.name LIKE :busca";
             		$res = $conn ->prepare($sql);
             		$res ->bindValue(":busca", "%$busca%", PDO::PARAM_STR);
             		$res ->execute();
             		$row = $res ->fetchAll(PDO::FETCH_ASSOC);
+
+                    var_dump(
+                            $row
+                    );
             		?>
             			<div class="col-md-12">
             <table class="table table-hover table-striped">
@@ -113,30 +116,30 @@ if (!isset($_SESSION['check'])) {
                     foreach ($row as $user):
                         ?>
                         <tr>
-                            <td><?php echo $user['id']; ?></td>
-                            <td class="hidden-xs"><?php echo $user['nome']; ?></td>
-                            <td><?php echo $user['usuario']; ?></td>
-                            <td class="text-uppercase hidden-xs"><?php echo $user['nv_nome']; ?></td>
+                            <td><?php echo $user["id"]; ?></td>
+                            <td class="hidden-xs"><?php echo $user["nome"]; ?></td>
+                            <td><?php echo $user["usuario"]; ?></td>
+                            <td class="text-uppercase hidden-xs"><?php echo $user["nv_nome"]; ?></td>
                             <td class="text-center">
                                 <?php
                                 if ($button_view) {
-                                    echo "<a href= '" . pg . "/viewer/view_usuarios?id=" . $user['id'] . "'><button type='button' class='btn btn-xs btn-info'><span class='glyphicon glyphicon-folder-open'></span></button></a> ";
+                                    echo "<a href= '" . pg . "/viewer/view_usuarios?id=" . $user["id"] . "'><button type='button' class='btn btn-xs btn-info'><span class='glyphicon glyphicon-folder-open'></span></button></a> ";
                                 }
                                 if ($button_edit) {
-                                    echo "<a href= '" . pg . "/edit/edit_usuarios?id=" . $user['id'] . "'><button type='button' class='btn btn-xs btn-warning hidden-xs'><span class='glyphicon glyphicon-edit'></span></button></a> ";
+                                    echo "<a href= '" . pg . "/edit/edit_usuarios?id=" . $user["id"] . "'><button type='button' class='btn btn-xs btn-warning hidden-xs'><span class='glyphicon glyphicon-edit'></span></button></a> ";
                                 }
                                 if ($button_delete) {
-                                    echo "<a href= '" . pg . "/process/del/del_usuario?id=" . $user['id'] . "' onclick=\"return confirm('Apagar registro?');\"><button type='button' class='btn btn-xs btn-danger hidden-xs'><span class='glyphicon glyphicon-remove'></span></button></a> ";
+                                    echo "<a href= '" . pg . "/process/del/del_usuario?id=" . $user["id"] . "' onclick=\"return confirm('Apagar registro?');\"><button type='button' class='btn btn-xs btn-danger hidden-xs'><span class='glyphicon glyphicon-remove'></span></button></a> ";
                                 }
                                 #inicio da alteração 
-                                if ($user['stu_id'] == 1) {
+                                if ($user["situation"] == 1) {
                                 					  	
-                                    echo "<a href='" . pg . "/process/edit/edit_situacao?id=" . $user['id'] . "'>
+                                    echo "<a href='" . pg . "/process/edit/edit_situacao?id=" . $user["id"] . "'>
                                           	<button type='button' class='btn btn-xs btn-default'><span class='fa fa-unlock'></span></button>
                                           </a>";
                                 } else {
                                                     	
-                                    echo "<a href='" . pg . "/process/edit/edit_situacao?id=" . $user['id'] . "'>
+                                    echo "<a href='" . pg . "/process/edit/edit_situacao?id=" . $user["id"] . "'>
                                             <button type='button' class='btn btn-xs btn-default'><span class='fa fa-lock'></span></button>
                                           </a>";
                                                         
@@ -170,31 +173,31 @@ if (!isset($_SESSION['check'])) {
                     foreach ($row as $user):
                         ?>
                         <tr>
-                            <td><?php echo $user['id']; ?></td>
-                            <td class="hidden-xs"><?php echo $user['nome']; ?></td>
-                            <td><?php echo $user['usuario']; ?></td>
-                            <td class="text-uppercase hidden-xs"><?php echo $user['nv_nome']; ?></td>
+                            <td><?php echo $user["id"]; ?></td>
+                            <td class="hidden-xs"><?php echo $user["nome"]; ?></td>
+                            <td><?php echo $user["usuario"]; ?></td>
+                            <td class="text-uppercase hidden-xs"><?php echo $user["nv_nome"]; ?></td>
                             
                             <td class="text-center">
                                 <?php
                                 if ($button_view) {
-                                    echo "<a href= '" . pg . "/viewer/view_usuarios?id=" . $user['id'] . "'><button type='button' class='btn btn-xs btn-info'><span class='glyphicon glyphicon-folder-open'></span></button></a> ";
+                                    echo "<a href= '" . pg . "/viewer/view_usuarios?id=" . $user["id"] . "'><button type='button' class='btn btn-xs btn-info'><span class='glyphicon glyphicon-folder-open'></span></button></a> ";
                                 }
                                 if ($button_edit) {
-                                    echo "<a href= '" . pg . "/edit/edit_usuarios?id=" . $user['id'] . "'><button type='button' class='btn btn-xs btn-warning hidden-xs'><span class='glyphicon glyphicon-edit'></span></button></a> ";
+                                    echo "<a href= '" . pg . "/edit/edit_usuarios?id=" . $user["id"] . "'><button type='button' class='btn btn-xs btn-warning hidden-xs'><span class='glyphicon glyphicon-edit'></span></button></a> ";
                                 }
                                 if ($button_delete) {
-                                    echo "<a href= '" . pg . "/process/del/del_usuario?id=" . $user['id'] . "' onclick=\"return confirm('Apagar registro?');\"><button type='button' class='btn btn-xs btn-danger hidden-xs'><span class='glyphicon glyphicon-remove'></span></button></a> ";
+                                    echo "<a href= '" . pg . "/process/del/del_usuario?id=" . $user["id"] . "' onclick=\"return confirm('Apagar registro?');\"><button type='button' class='btn btn-xs btn-danger hidden-xs'><span class='glyphicon glyphicon-remove'></span></button></a> ";
                                 }
                                 #inicio da alteração 
-                                if ($user['stu_id'] == 1) {
+                                if ($user["situation"] == 1) {
                                 					  	
-                                    echo "<a href='" . pg . "/process/edit/edit_situacao?id=" . $user['id'] . "'>
+                                    echo "<a href='" . pg . "/process/edit/edit_situacao?id=" . $user["id"] . "'>
                                           	<button type='button' class='btn btn-xs btn-default'><span class='fa fa-unlock'></span></button>
                                           </a>";
                                 } else {
                                                     	
-                                    echo "<a href='" . pg . "/process/edit/edit_situacao?id=" . $user['id'] . "'>
+                                    echo "<a href='" . pg . "/process/edit/edit_situacao?id=" . $user["id"] . "'>
                                             <button type='button' class='btn btn-xs btn-default'><span class='fa fa-lock'></span></button>
                                           </a>";
                                                         
@@ -209,7 +212,7 @@ if (!isset($_SESSION['check'])) {
             </table>
             <!-- Início da paginação-->
             <?php
-            $sql_pag = "SELECT COUNT(id) AS qnt_id FROM usuarios";
+            $sql_pag = "SELECT COUNT(id) AS qnt_id FROM users";
             $res_pag = $conn ->prepare($sql_pag);
             $res_pag ->execute();
             $row_pag = $res_pag ->fetch(PDO::FETCH_ASSOC);

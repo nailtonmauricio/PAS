@@ -17,12 +17,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
 
         //Cria o arquivo de configuração em /config/config.php
-        if(!is_file(__DIR__."/config.txt")){
+        if(!is_file(__DIR__."/config/config.txt")){
             $statment = array("{$data["host_name"]}", "{$data["db_name"]}", "{$data["charset"]}", "{$data["user_name"]}", "{$data["password"]}");
             $config_file = implode(";", $statment);
 
             //Criação do arquivo config.txt com os dados vindos pelo formulário de instalação
-            $file = "config.txt";
+            $file = "config/config.txt";
             $handle = fopen($file, 'a+');
             fwrite($handle, $config_file);
             fclose($handle);
@@ -67,7 +67,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         (13, NULL, 'process/reg/reg_niveis_acesso', NULL, '2022-02-04 19:58:56', NULL),
         (14, NULL, 'process/edit/edit_niveis_acesso', NULL, '2022-02-04 19:59:37', NULL),
         (15, NULL, 'process/edit/edit_menu', NULL, '2022-02-07 14:51:34', NULL),
-        (16, NULL, 'process/edit/edit_permissao', NULL, '2022-02-07 14:52:16', NULL)";
+        (16, NULL, 'process/edit/edit_permissao', NULL, '2022-02-07 14:52:16', NULL),
+        (17, 'usuários', 'list/list_usuarios', NULL, '2022-02-08 16:39:27', NULL),
+        (18, NULL, 'register/reg_usuarios', NULL, '2022-02-08 17:09:22', NULL),
+        (19, NULL, 'viewer/view_usuarios', NULL, '2022-02-08 17:12:08', NULL),
+        (20, NULL, 'edit/edit_usuarios', NULL, '2022-02-08 17:12:32', NULL),
+        (21, NULL, 'process/reg/reg_usuarios', NULL, '2022-02-08 19:46:00', NULL),
+        (22, NULL, 'process/edit/proc_edit_usuario', NULL, '2022-02-08 19:46:25', NULL),
+        (23, NULL, 'process/del/del_usuario', NULL, '2022-02-08 19:47:19', NULL)";
         $conn ->exec($insert_pages);
 
         //Table access_level
@@ -114,7 +121,14 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         (13, 1, 13, 1, 0, '2022-02-04 19:58:56', NULL),
         (14, 1, 14, 1, 0, '2022-02-04 19:59:37', NULL),
         (15, 1, 15, 1, 0, '2022-02-04 19:59:37', NULL),
-        (16, 1, 16, 1, 0, '2022-02-04 19:59:37', NULL)";
+        (16, 1, 16, 1, 0, '2022-02-04 19:59:37', NULL),
+        (17, 1, 17, 1, 1, '2022-02-08 16:39:27', NULL),
+        (18, 1, 18, 1, 0, '2022-02-08 17:09:22', NULL),
+        (19, 1, 19, 1, 0, '2022-02-08 17:12:08', NULL),
+        (20, 1, 20, 1, 0, '2022-02-08 17:12:32', NULL),
+        (21, 1, 21, 1, 0, '2022-02-08 19:46:00', NULL),
+        (22, 1, 22, 1, 0, '2022-02-08 19:46:25', NULL),
+        (23, 1, 23, 1, 0, '2022-02-08 19:47:19', NULL)";
         $conn ->exec($insert_page_access_level);
 
         //Table users

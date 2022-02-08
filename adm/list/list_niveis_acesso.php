@@ -91,7 +91,7 @@ if (!isset($_SESSION['check'])) {
                             </td>
                             <td class="text-center hidden-xs"><?php echo date(DBR, strtotime($access_level['created'])); ?></td>
                             <td class="text-center hidden-xs"><?php
-                    if (!empty($row['modified'])) {
+                    if (!empty($access_level["modified"])) {
                         echo date(DHBR, strtotime($access_level['modified']));
                     }
                         ?>

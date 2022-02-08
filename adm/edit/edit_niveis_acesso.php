@@ -2,7 +2,7 @@
 // Verifica se a sessção foi iniciada, caso não tenha sido a linha 15 redireciona para a página de login.
 if (!isset($_SESSION['check'])) {
     $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible'> "
-            . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
+            . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
             . "</button><strong>Aviso!&nbsp;</stron>"
             . "Área restrita, faça login para acessar.</div>";
@@ -10,15 +10,18 @@ if (!isset($_SESSION['check'])) {
 }
 $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 if (!empty($id)) {
-    if ($_SESSION['nva_user_id'] == 1) {
-        $sql_nv = "SELECT * FROM nv_acessos WHERE id= '$id'";
+    if ($_SESSION["credentials"]["access_level"] == 1) {
+        $sql_nv = "SELECT * FROM access_level WHERE id=:id";
     } else {
-        $sql_nv = "SELECT * FROM nv_acessos
-                 WHERE ordem > '".$_SESSION['ordem']."' AND '".$_SESSION['nva_user_id']."' = '$id' LIMIT 1";
+        $sql_nv = "SELECT * FROM access_level
+                 WHERE position > '".$_SESSION["credentials"]["position"]."' AND '".$_SESSION["credentials"]["access_level"]."' =:id LIMIT 1";
     }
-    $result_nv = mysqli_query($conn, $sql_nv);
-    if (mysqli_num_rows($result_nv) > 0) {
-        $row_nv= mysqli_fetch_assoc($result_nv);
+    $res_nv = $conn ->prepare($sql_nv);
+    $res_nv ->bindValue(":id", $id, PDO::PARAM_INT);
+    $res_nv ->execute();
+
+    if ($res_nv ->rowCount()) {
+        $row_nv= $res_nv ->fetch(PDO::FETCH_ASSOC);
         ?>
         <div class="well conteudo">
             <div class="pull-right">
@@ -29,12 +32,12 @@ if (!empty($id)) {
                 </a>
             </div>
             <div class="page-header">
-                <h1>Editar Níveis de Acesso</h1>
+
             </div>
             <?php
-            if (isset($_SESSION['msg'])) {
-                echo $_SESSION['msg'];
-                unset($_SESSION['msg']);
+            if (isset($_SESSION["msg"])) {
+                echo $_SESSION["msg"];
+                unset($_SESSION["msg"]);
             }
             ?>
             <form name="editNvAcesso" method="post" action="<?php echo pg; ?>/process/edit/edit_niveis_acesso" class="form-horizontal" enctype="multipart/form-data">
@@ -42,11 +45,11 @@ if (!empty($id)) {
                 <div class="form-group">
                     <label for="nome" class="col-sm-2 control-label">Nome</label>
                     <div class="col-sm-10">
-                        <input type="text" name="nome" class="form-control text-capitalize" id="nome" placeholder="Nome Completo" value="<?php
-                        if (isset($_SESSION['dados']['nome'])) {
-                            echo $_SESSION['dados']['nome'];
-                        } elseif (isset($row_nv['nome'])) {
-                            echo $row_nv['nome'];
+                        <input type="text" name="nome" class="form-control text-capitalize" id="nome" pattern="\w{4,}(^\s)?" value="<?php
+                        if (isset($_SESSION["data"]["name"])) {
+                            echo $_SESSION["data"]["name"];
+                        } elseif (isset($row_nv["name"])) {
+                            echo $row_nv["name"];
                         }
                         ?>"/>
                     </div>
@@ -89,6 +92,6 @@ if (!empty($id)) {
             . "Nem um usuário encontrado(2)!</div>";
     $url_destino = pg . "/list/list_niveis_acesso";
     header("Location: $url_destino");
-}  
+}
                     
 

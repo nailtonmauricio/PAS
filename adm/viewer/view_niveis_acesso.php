@@ -11,12 +11,12 @@ $id = filter_input(INPUT_GET, 'id', FILTER_SANITIZE_NUMBER_INT);
 
 if (!empty($id)) {
     if ($_SESSION["credentials"]["access_level"] == 1) {
-        $sql = "SELECT id, name, position, situation FROM access_level WHERE id =:id";
+        $sql = "SELECT id, name, position, situation, created, modified FROM access_level WHERE id =:id";
         $res = $conn->prepare($sql);
         $res ->bindParam(":id", $id, PDO::PARAM_INT);
         $res ->execute();
     } else {
-        $sql = "SELECT id, name, position, situation FROM access_level WHERE position >{$_SESSION["credentials"]["position"]} AND id =:id";
+        $sql = "SELECT id, name, position, situation, created, modified FROM access_level WHERE position >{$_SESSION["credentials"]["position"]} AND id =:id";
         $res = $conn->prepare($sql);
         $res ->bindParam(":id", $id, PDO::PARAM_INT);
         $res ->execute();
@@ -40,10 +40,10 @@ if (!empty($id)) {
                     echo "<a href= '" . pg . "/list/list_niveis_acesso'><button type='button' class='btn btn-xs btn-primary'><span class='glyphicon glyphicon-list'></span> Listar</button></a> ";
                 }
                 if ($button_edit) {
-                    echo "<a href= '" . pg . "/edit/edit_niveis_acesso?id=" . $row['id'] . "'><button type='button' class='btn btn-xs btn-warning'><span class='glyphicon glyphicon-edit'></span> Editar</button></a> ";
+                    echo "<a href= '" . pg . "/edit/edit_niveis_acesso?id=" . $row["id"] . "'><button type='button' class='btn btn-xs btn-warning'><span class='glyphicon glyphicon-edit'></span> Editar</button></a> ";
                 }
                 if ($button_delete) {
-                    echo "<a href= '" . pg . "/process/del/del_niveis_acesso?id=" . $row['id'] . "'onclick=\"return confirm('Apagar nível de acesso?');\"><button type='button' class='btn btn-xs btn-danger'><span class='glyphicon glyphicon-trash'></span> Apagar</button></a> ";
+                    echo "<a href= '" . pg . "/process/del/del_niveis_acesso?id=" . $row["id"] . "'onclick=\"return confirm('Apagar nível de acesso?');\"><button type='button' class='btn btn-xs btn-danger'><span class='glyphicon glyphicon-trash'></span> Apagar</button></a> ";
                 }
                 ?>
             </div>
@@ -52,17 +52,17 @@ if (!empty($id)) {
                 <dt>Id</dt>
                 <dd><?php echo $row["id"]; ?></dd>
                 <dt>Nome</dt>
-                <dd><?php echo $row["nome"]; ?></dd>
+                <dd><?php echo $row["name"]; ?></dd>
                 <dt>Ordem</dt>
-                <dd><?php echo $row["ordem"]; ?></dd>
+                <dd><?php echo $row["position"]; ?></dd>
                 <dt>Data Criação</dt>
-                <dd><?php echo date(DHBR, strtotime($row['created'])); ?></dd>
+                <dd><?php echo date(DHBR, strtotime($row["created"])); ?></dd>
                 <dt>Ultima Modificação</dt>
                 <dd><?php
                     if (!empty($row["modified"])) {
-                        echo date(DBR, strtotime($row['modified']));
+                        echo date(DBR, strtotime($row["modified"]));
                     } else {
-                        echo $row['modified'];
+                        echo $row["modified"];
                     }
                     ?></dd>
             </div>

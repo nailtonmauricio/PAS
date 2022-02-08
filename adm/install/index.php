@@ -3,9 +3,9 @@
 session_start();
 
 var_dump(
-    scandir("./")
+    scandir("./config")
 );
-$config = scandir("./");
+$config = scandir("./config");
 if(in_array("config.txt", $config)){
     header("Location: ../login.php");
 }
