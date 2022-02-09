@@ -74,7 +74,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         (20, NULL, 'edit/edit_usuarios', NULL, '2022-02-08 17:12:32', NULL),
         (21, NULL, 'process/reg/reg_usuarios', NULL, '2022-02-08 19:46:00', NULL),
         (22, NULL, 'process/edit/proc_edit_usuario', NULL, '2022-02-08 19:46:25', NULL),
-        (23, NULL, 'process/del/del_usuario', NULL, '2022-02-08 19:47:19', NULL)";
+        (23, NULL, 'process/del/del_usuario', NULL, '2022-02-08 19:47:19', NULL),
+        (24, NULL, 'backup', NULL, '2022-02-09 02:31:56', NULL)";
         $conn ->exec($insert_pages);
 
         //Table access_level
@@ -128,7 +129,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         (20, 1, 20, 1, 0, '2022-02-08 17:12:32', NULL),
         (21, 1, 21, 1, 0, '2022-02-08 19:46:00', NULL),
         (22, 1, 22, 1, 0, '2022-02-08 19:46:25', NULL),
-        (23, 1, 23, 1, 0, '2022-02-08 19:47:19', NULL)";
+        (23, 1, 23, 1, 0, '2022-02-08 19:47:19', NULL),
+        (24, 1, 24, 1, 0, '2022-02-09 02:31:56', NULL)";
         $conn ->exec($insert_page_access_level);
 
         //Table users

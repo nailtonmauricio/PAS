@@ -2,7 +2,7 @@
 
 	if (!isset($_SESSION['check'])) {
 	    $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible'> "
-	            . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
+	            . "<button type='button' class='close' data-dismiss='alert'>"
 	            . "<span aria-hidden='true'>&times;</span>"
 	            . "</button><strong>Aviso!&nbsp;</stron>"
 	            . "Área restrita, faça login para acessar.</div>";
@@ -10,11 +10,23 @@
 	}
 
 
-$result_tabela = "SHOW TABLES";
+/*$result_tabela = "SHOW TABLES";
 $resultado_tabela = mysqli_query($conn, $result_tabela);
 while($row_tabela = mysqli_fetch_row($resultado_tabela)){
 	$tabelas[] = $row_tabela[0];
+}*/
+
+$sql_table = "SHOW TABLES";
+$res_table = $conn ->prepare($sql_table);
+$res_table ->execute();
+
+while($row_table = $res_table ->fetchAll(PDO::FETCH_ASSOC)){
+    $tables[] = $row_table;
 }
+
+var_dump(
+    $tables
+);
 //var_dump($tabelas);
 
 $result = "";
@@ -100,7 +112,7 @@ $download = $nome_arquivo . ".sql";
             . "</button><strong>Aviso!&nbsp;</stron>"
             . "Backup  e logout realizados com sucesso.</div>";
     	$url_destino = pg . "/sair.php";
-    	header("Location: $url_destino");
+    	#header("Location: $url_destino");
     }else {
 		$_SESSION ['msg_bkp'] = "<div class='alert alert-danger alert-dismissible text-center'> "
 	            . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
@@ -108,5 +120,5 @@ $download = $nome_arquivo . ".sql";
 	            . "</button><strong>Aviso!&nbsp;</stron>"
 	            . "Erro ao realizar o backup.</div>";
 	    $url_destino = pg . "/sair.php";
-	    header("Location: $url_destino");
+	    #header("Location: $url_destino");
 	}
