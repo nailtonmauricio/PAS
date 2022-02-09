@@ -32,8 +32,8 @@ if(!in_array("config.txt", scandir("install/config"))){
                 <div class="row">
                     <img src="assets/img/logo.png" class="img-responsive displayed" alt="NMATEC"/><br/>
                     <?php
-                    if (isset($_SESSION['msg'])) {
-                        echo $_SESSION['msg'];
+                    if (isset($_SESSION["msg"])) {
+                        echo $_SESSION["msg"];
                         session_destroy();
                     }
                     ?>

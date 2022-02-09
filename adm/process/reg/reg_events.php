@@ -2,16 +2,24 @@
 
 if (!isset($_SESSION['check'])) {
     $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible'> "
-            . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
+            . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
             . "</button><strong>Aviso!&nbsp;</stron>"
             . "Área restrita, faça login para acessar.</div>";
     header("Location: login.php");
 }
 
-//$cadEvent = filter_input(INPUT_POST, 'btnCadastrar', FILTER_SANITIZE_STRING);
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+    $data = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
+    $error = false;
+    var_dump(
+        $data
+    );
 
-if ($_SERVER ['REQUEST_METHOD'] == 'POST') {
+
+}
+
+/*if ($_SERVER ['REQUEST_METHOD'] == 'POST') {
     $erro = false;
     $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
 
@@ -103,4 +111,4 @@ if ($_SERVER ['REQUEST_METHOD'] == 'POST') {
             . "Seu nível de acesso não permite executar este procedimento!</div>";
     $url_destino = pg . "/home";
     header("Location: $url_destino");
-}
+}*/

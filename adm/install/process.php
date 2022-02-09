@@ -21,8 +21,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $statment = array("{$data["host_name"]}", "{$data["db_name"]}", "{$data["charset"]}", "{$data["user_name"]}", "{$data["password"]}");
             $config_file = implode(";", $statment);
 
+            $directory = "config/";
+            if(!is_dir($directory)){
+                mkdir($directory, 0777, true);
+                chmod($directory, 0777);
+            }
             //Criação do arquivo config.txt com os dados vindos pelo formulário de instalação
-            $file = "config/config.txt";
+            $file = "{$directory}config.txt";
             $handle = fopen($file, 'a+');
             fwrite($handle, $config_file);
             fclose($handle);
@@ -75,7 +80,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         (21, NULL, 'process/reg/reg_usuarios', NULL, '2022-02-08 19:46:00', NULL),
         (22, NULL, 'process/edit/proc_edit_usuario', NULL, '2022-02-08 19:46:25', NULL),
         (23, NULL, 'process/del/del_usuario', NULL, '2022-02-08 19:47:19', NULL),
-        (24, NULL, 'backup', NULL, '2022-02-09 02:31:56', NULL)";
+        (24, NULL, 'backup', NULL, '2022-02-09 02:31:56', NULL),
+        (25, 'agenda', 'list/list_events', NULL, '2022-02-09 18:15:00', NULL),
+        (26, NULL, 'process/reg/reg_events', NULL, '2022-02-09 19:12:13', NULL)";
         $conn ->exec($insert_pages);
 
         //Table access_level
@@ -130,7 +137,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         (21, 1, 21, 1, 0, '2022-02-08 19:46:00', NULL),
         (22, 1, 22, 1, 0, '2022-02-08 19:46:25', NULL),
         (23, 1, 23, 1, 0, '2022-02-08 19:47:19', NULL),
-        (24, 1, 24, 1, 0, '2022-02-09 02:31:56', NULL)";
+        (24, 1, 24, 1, 0, '2022-02-09 02:31:56', NULL),
+        (25, 1, 25, 1, 1, '2022-02-09 18:15:00', '2022-02-09 18:15:13'),
+        (26, 1, 26, 1, 0, '2022-02-09 19:12:13', NULL)";
         $conn ->exec($insert_page_access_level);
 
         //Table users

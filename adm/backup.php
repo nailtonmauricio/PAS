@@ -10,85 +10,66 @@
 	}
 
 
-/*$result_tabela = "SHOW TABLES";
-$resultado_tabela = mysqli_query($conn, $result_tabela);
-while($row_tabela = mysqli_fetch_row($resultado_tabela)){
-	$tabelas[] = $row_tabela[0];
-}*/
+$result = "";
 
+/*Verifica as tabelas contidas na base de dados*/
 $sql_table = "SHOW TABLES";
 $res_table = $conn ->prepare($sql_table);
 $res_table ->execute();
+$row_table = $res_table ->fetchAll(PDO::FETCH_ASSOC);
 
-while($row_table = $res_table ->fetchAll(PDO::FETCH_ASSOC)){
-    $tables[] = $row_table;
+foreach ($row_table as $table) {
+    foreach ($table as $item_table){
+        $sql_column = "SELECT * FROM {$item_table}";
+        $res_column = $conn ->prepare($sql_column);
+        $res_column ->execute();
+        $column_count = $res_column ->columnCount();
+
+        /* Apagando as tabelas caso existam*/
+        $result .= "DROP TABLE IF EXISTS {$item_table};";
+
+        /* Verificar DML das tabelas*/
+        $sql_create_table = "SHOW CREATE TABLE {$item_table}";
+        $res_create_table = $conn->prepare($sql_create_table);
+        $res_create_table ->execute();
+        $row_create_table = $res_create_table ->fetch(PDO::FETCH_NUM);
+        $result .= "\n\n" . $row_create_table[1] . ";\n\n";
+
+        for($i = 0; $i < $column_count; $i++){
+            while($row_column = $res_column ->fetch(PDO::FETCH_NUM)){
+
+                //Criar a intrução para inserir os dados
+                $result .="INSERT INTO {$item_table} VALUES (";
+                for($j = 0; $j < $column_count; $j++){
+                    //addslashes — Adiciona barras invertidas a uma string
+                    $row_column[$j] = addslashes($row_column[$j]);
+                    //str_replace — Substitui todas as ocorrências da string \n pela \\n
+                    $row_column[$j] = str_replace("\n", "\\n", $row_column[$j]);
+
+                    if(isset($row_column[$j])){
+                        if(!empty($row_column[$j])){
+                            $result .= '"' . $row_column[$j].'"';
+                        }else{
+                            $result .= 'NULL';
+                        }
+                    }else{
+                        $result .= 'NULL';
+                    }
+
+                    if($j < ($column_count - 1)){
+                        $result .=',';
+                    }
+                }
+                $result .= ");\n";
+            }
+        }
+    }
 }
-
-var_dump(
-    $tables
-);
-//var_dump($tabelas);
-
-$result = "";
-foreach($tabelas as $tabela){
-	//Pesquisar o nome das colunas
-	$result_colunas = "SELECT * FROM " . $tabela;
-	$resultado_colunas = mysqli_query($conn, $result_colunas);
-	$num_colunas = mysqli_num_fields($resultado_colunas);
-	echo "Quantidade de colunas na tabela: ". $tabela. " - " . $num_colunas . "<br>";
-	
-	//Criar a intrução para apagar a tabela caso a mesma exista no BD
-	$result .= 'DROP TABLE IF EXISTS '.$tabela.';';
-	
-	//Pesquisar como a coluna é criada
-	$result_cr_col = "SHOW CREATE TABLE " . $tabela;
-	$resultado_cr_col = mysqli_query($conn, $result_cr_col);
-	$row_cr_col = mysqli_fetch_row($resultado_cr_col);
-	//var_dump($row_cr_col);
-	$result .= "\n\n" . $row_cr_col[1] . ";\n\n";
-	//echo $result;
-	
-	//Percorrer o array de colunas
-	for($i = 0; $i < $num_colunas; $i++){
-		//Ler o valor de cada coluna no bando de dados
-		while($row_tp_col = mysqli_fetch_row($resultado_colunas)){
-			var_dump($row_tp_col);
-			//Criar a intrução da Query para inserir os dados
-			$result .= 'INSERT INTO ' . $tabela . ' VALUES(';
-			
-			//Ler os dados da tabela
-			for($j = 0; $j < $num_colunas; $j++){
-				//addslashes — Adiciona barras invertidas a uma string
-				$row_tp_col[$j] = addslashes($row_tp_col[$j]);
-				//str_replace — Substitui todas as ocorrências da string \n pela \\n
-				$row_tp_col[$j] = str_replace("\n", "\\n", $row_tp_col[$j]);
-				
-				if(isset($row_tp_col[$j])){
-					if(!empty($row_tp_col[$j])){
-						$result .= '"' . $row_tp_col[$j].'"';
-					}else{
-						$result .= 'NULL';
-					}
-				}else{
-					$result .= 'NULL';
-				}
-				
-				if($j < ($num_colunas - 1)){
-					$result .=',';
-				}				
-			}
-			$result .= ");\n";
-		}
-	}
-	$result .= "\n\n";
-	//echo $result;
-}
-
 //Criar o diretório de backup
 $diretorio = 'backups/';
 if(!is_dir($diretorio)){
-	mkdir($diretorio, 0777, true);
-	chmod($diretorio, 0777);
+    mkdir($diretorio, 0777, true);
+    chmod($diretorio, 0777);
 }
 
 //Nome do arquivo de backup
@@ -104,21 +85,8 @@ fclose($handle);
 $download = $nome_arquivo . ".sql";
 
 
-	//echo "Realziar a rotina de backup";
-	 if($handle){
-    	$_SESSION ['msg_bkp'] = "<div class='alert alert-success alert-dismissible text-center'> "
-            . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
-            . "<span aria-hidden='true'>&times;</span>"
-            . "</button><strong>Aviso!&nbsp;</stron>"
-            . "Backup  e logout realizados com sucesso.</div>";
-    	$url_destino = pg . "/sair.php";
-    	#header("Location: $url_destino");
-    }else {
-		$_SESSION ['msg_bkp'] = "<div class='alert alert-danger alert-dismissible text-center'> "
-	            . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
-	            . "<span aria-hidden='true'>&times;</span>"
-	            . "</button><strong>Aviso!&nbsp;</stron>"
-	            . "Erro ao realizar o backup.</div>";
-	    $url_destino = pg . "/sair.php";
-	    #header("Location: $url_destino");
-	}
+//echo "Realziar a rotina de backup";
+if($handle){
+    $url_return = pg . "/sair.php";
+    header("Location: $url_return");
+}

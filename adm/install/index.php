@@ -2,14 +2,10 @@
 
 session_start();
 
-var_dump(
-    scandir("./config")
-);
 $config = scandir("./config");
 if(in_array("config.txt", $config)){
     header("Location: ../login.php");
 }
-
 ?>
 <!doctype html>
 <html lang="pt-br">
@@ -32,17 +28,18 @@ if(in_array("config.txt", $config)){
     </style>
 </head>
 <body>
-<?php
-if(isset($_SESSION["msg"])){
-    echo $_SESSION["msg"];
-    unset($_SESSION["msg"]);
-}
-?>
-<h1>DB Configuration</h1>
 <div class="container-fluid">
-    <div class="row">
+    <div class="row justify-content-center">
+        <?php
+
+        if(isset($_SESSION["msg"])){
+            echo $_SESSION["msg"];
+            unset($_SESSION["msg"]);
+        }
+        ?>
+        <h1 class="text-center">DB Configuration</h1>
         <div class="col-6">
-            <form name="myForm" method="post" action="process.php" class="needs-validation" novalidate>
+            <form name="myForm" method="post" action="process.php" class="needs-validation" novalidate autocomplete="off">
                 <div class="mb-3">
                     <label for="host_name" class="form-label">Host name</label>
                     <input type="text" class="form-control" id="host_name" name="host_name"
@@ -93,8 +90,8 @@ if(isset($_SESSION["msg"])){
                 </div>
                 <div class="mb-3">
                     <label for="charset" class="form-label">Charset</label>
-                    <input type="text" class="form-control" id="charset" name="charset"
-                           aria-describedby="charset"/>
+                    <input type="text" class="form-control" id="charset" name="charset" value="utf8"
+                           aria-describedby="charset" readonly tabindex="-1"/>
                     <div id="charset" class="form-text">Please set a charset enconde</div>
                     <div class="valid-feedback">
                         Looks good!

@@ -21,12 +21,9 @@ if (!empty($id)) {
     var_dump(
             $row
     );
-    /*
-     * Variável global para edição
-     */
-    $_SESSION["user_edit"] = $row;
 
     if ($res ->rowCount()) {
+        $_SESSION["user_edit"] = $row;
         ?>
         <div class="well conteudo">
             <div class="pull-right">
