@@ -1,86 +1,55 @@
 <?php
 
 session_start();
-//$btnRecupera = filter_input(INPUT_POST, 'btnRecupera', FILTER_SANITIZE_STRING);
-if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+
+if ($_SERVER["REQUEST_METHOD"] == "POST"){
     
-    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-    
+    $email = filter_input(INPUT_POST, "email", FILTER_SANITIZE_EMAIL);
+    $email = filter_var($email, FILTER_VALIDATE_EMAIL);
+
     if(!empty($email)){
-
-        include_once ("config/conn.php");
-        $sql = "SELECT id, nome, email FROM usuarios WHERE email = '$email' LIMIT 1";
-        $res = mysqli_query ($conn, $sql);
-        $row = mysqli_fetch_assoc ($res);
+        include_once ("config/config.php");
+        $sql = "SELECT id, name, email FROM users WHERE email =:email";
+        $res = $conn ->prepare($sql);
+        $res ->bindValue(":email", $email, PDO::PARAM_STR);
+        $res ->execute();
+        $row = $res ->fetch(PDO::FETCH_ASSOC);
        
-        if (mysqli_num_rows($res)){
-            $key= md5($row ['id'] . $row ['email'] . date("Y-m-d H:i:s"));
-            $sqlUpdate = "UPDATE usuarios SET
-                          recuperar_senha='$key',
-                          modified=NOW()
-                          WHERE id='".$row ['id']."'";
-            $resUpdate = mysqli_query($conn, $sqlUpdate);
+        if ($res ->rowCount()){
+            $key= md5($row ["id"] . $row ["email"] . date("Y-m-d H:i:s"));
+            $sql_update = "UPDATE users SET
+                          password_recover =:key,
+                          modified = CURRENT_TIMESTAMP 
+                          WHERE id =:id";
+            $res_update = $conn ->prepare($sql_update);
+            $res_update ->bindValue(":key", $key, PDO::PARAM_STR);
+            $res_update ->bindValue(":id", $row["id"], PDO::PARAM_INT);
+            $res_update ->execute();
 
-            if($resUpdate){
+            if($res_update ->rowCount()){
 
                 include_once ("config/config.php");
                 
                 $url = pg."/atualizar_senha.php?key=".$key;
 
-                //Variaveis de POST, Alterar somente se necessário 
-                //====================================================
-                $email = $row ['email'];
-                $mensagem = "Para recuperar a senha acesse o link: ";
-                $mensagem .= $url;
-                //====================================================
-                    
-                //REMETENTE --> ESTE EMAIL TEM QUE SER VALIDO DO DOMINIO
-                //==================================================== 
-                $email_remetente = "ti@labfdiniz.com.br"; // deve ser uma conta de email do seu dominio 
-                //====================================================
-                //Configurações do email, ajustar conforme necessidade
-                //==================================================== 
-                $email_destinatario = $email; // pode ser qualquer email que receberá as mensagens
-                $email_reply = "informatica@labfdiniz.com.br"; 
-                $email_assunto = "Recuperar senha SIG"; // Este será o assunto da mensagem
-                //====================================================
-
-                //Monta o Corpo da Mensagem
-                //====================================================
-                $email_conteudo = "$mensagem"; 
-                //====================================================
-                    
-                //Seta os Headers (Alterar somente caso necessario) 
-                //==================================================== 
-                $email_headers = implode ( "\r\n",array ( "From: $email_remetente", "Reply-To: $email_reply", "Return-Path: $email_remetente","MIME-Version: 1.0","X-Priority: 3") );
-                //====================================================
-
-                //Enviando o email 
-                //==================================================== 
-                if(mail ($email_destinatario, $email_assunto, nl2br($email_conteudo), $email_headers)){
-                    $_SESSION ['msg'] = "<div class='alert alert-success alert-dismissible text-center'> "
-                    . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
-                    . "<span aria-hidden='true'>&times;</span>"
-                    . "</button><strong>Aviso!&nbsp;</stron>"
-                    . "Chave para recuperação de senha enviada com sucesso.</div>";
-                    $url_destino = pg . "/login.php";
-                    header("Location: $url_destino");
-                }
+                /*
+                 * IMPLEMENTAR AQUI AS CONFIGURAÇÕES DE DISPARO DE E-MAIL DE ACORCO COM SEU PROVEDOR
+                 */
             }
 
        } else {
-        $_SESSION ['msg_key'] = "<div class='alert alert-danger alert-dismissible text-center'> "
-            . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
+        $_SESSION ["msg"] = "<div class='alert alert-danger alert-dismissible text-center'> "
+            . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
-            . "</button><strong>Aviso!&nbsp;</stron>"
+            . "</button><strong>Whoops!&nbsp;</stron>"
             . "E-mail para recuperação inválido.</div>";
        }
 
     } else {
-    $_SESSION ['msg_key'] = "<div class='alert alert-danger alert-dismissible text-center'> "
-            . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
+    $_SESSION ["msg"] = "<div class='alert alert-danger alert-dismissible text-center'> "
+            . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
-            . "</button><strong>Aviso!&nbsp;</stron>"
+            . "</button><strong>Whoops!&nbsp;</stron>"
             . "E-mail deve ser preenchido!</div>";
     }
 }
@@ -103,9 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                 <div>
                     <img src="assets/img/logo.png" class="img-responsive displayed" alt="LAB FDINIZ"/><br>
                     <?php
-                        if (isset($_SESSION['msg_key'])) {
-                            echo $_SESSION['msg_key'];
-                            unset($_SESSION['msg_key']);
+                        if (isset($_SESSION["msg"])) {
+                            echo $_SESSION["msg"];
+                            unset($_SESSION["msg"]);
                         }
                     ?>
                 </div>
@@ -124,7 +93,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                             </button>
                         </div>
                     </div>
-
                     <div style="margin-top: 10px;">
                         <p class="text-center"><a href="login.php">Retornar ao Login</a></p>
                     </div>

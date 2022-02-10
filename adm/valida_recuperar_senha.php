@@ -3,21 +3,19 @@
 session_start();
 
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     include_once ("config/conn.php");
     include_once ("config/config.php");
     $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
 
-//echo "Nova Senha: ".$dados['senha']."<br/>";
-//echo "Chave de verificação: ".$dados['key']."<br/>";
 
     $newSenha = $dados['senha'];
     $key = $dados['key'];
 
     if (strlen($newSenha) < 6) {
         $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible text-center'> "
-                . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
+                . "<button type='button' class='close' data-dismiss='alert'>"
                 . "<span aria-hidden='true'>&times;</span>"
                 . "</button><strong>Aviso!&nbsp;</stron>"
                 . "A senha deve ter mais que seis caracteres.</div>";
@@ -26,8 +24,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         if (!empty($key)) {
 
-            $query = "SELECT id FROM usuarios WHERE recuperar_senha = '$key' LIMIT 1";
-            $result = mysqli_query($conn, $query);
+            $sql = "SELECT id FROM usuarios WHERE recuperar_senha = '$key' LIMIT 1";
+            $res = mysqli_query($conn, $query);
             $row = mysqli_fetch_assoc($result);
         }
 

@@ -29,7 +29,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 $_SESSION["check"] = true;
                 header("Location: index.php");
             } else {
-                $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible text-center'> "
+                $_SESSION ["msg"] = "<div class='alert alert-danger alert-dismissible text-center'> "
                     . "<button type='button' class='close' data-dismiss='alert'>"
                     . "<span aria-hidden='true'>&times;</span>"
                     . "</button><strong>Aviso!&nbsp;</stron>"
@@ -37,7 +37,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
                 header("Location: login.php");
             }
         } else {
-            $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible text-center'> "
+            $_SESSION ["msg"] = "<div class='alert alert-danger alert-dismissible text-center'> "
                 . "<button type='button' class='close' data-dismiss='alert'>"
                 . "<span aria-hidden='true'>&times;</span>"
                 . "</button><strong>Aviso!&nbsp;</stron>"
@@ -45,7 +45,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: login.php");
         }
     } else {
-        $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible text-center'> "
+        $_SESSION ["msg"] = "<div class='alert alert-danger alert-dismissible text-center'> "
             . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
             . "</button><strong>Aviso!&nbsp;</stron>"

@@ -39,7 +39,7 @@ if(!in_array("config.txt", scandir("install/config"))){
                     ?>
                 </div>
                 <div class="row">
-                    <form name="formLogin" method="post" action="validaLogin.php">
+                    <form name="formLogin" method="post" action="valida_login.php">
                         <label for="user_name" class="sr-only"></label>
                         <div class="input-group">
                             <span class="input-group-addon"><i class="fas fa-user"></i></span>
