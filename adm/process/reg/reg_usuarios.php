@@ -2,16 +2,22 @@
 
 if (!isset($_SESSION['check'])) {
     $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible'> "
-            . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
+            . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
             . "</button><strong>Aviso!&nbsp;</stron>"
             . "Área restrita, faça login para acessar.</div>";
     header("Location: login.php");
 }
 
-//$cadusuario = filter_input(INPUT_POST, 'btnCadastrar', FILTER_SANITIZE_STRING);
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+    $data = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    var_dump(
+        $data,
+        json_encode($data)
+    );
+}
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+/*if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
     $erro = false;
     $dados_validos = vdados($dados);
@@ -104,5 +110,5 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             . "Erro ao carregar a página!</div>";
     $url_destino = pg . "/list/list_usuarios";
     header("Location: $url_destino");
-}
+}*/
 

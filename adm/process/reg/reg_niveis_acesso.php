@@ -2,22 +2,43 @@
 
 if (!isset($_SESSION['check'])) {
     $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible'> "
-            . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
+            . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
-            . "</button><strong>Aviso!&nbsp;</stron>"
+            . "</button><strong>Whoops!&nbsp;</stron>"
             . "Área restrita, faça login para acessar.</div>";
     header("Location: login.php");
 }
 
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
-    $erro = false;
-    $dados_validos = vdados($dados);
-    if (!$dados_validos) {
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $data = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $error = false;
+    var_dump(
+        $error,
+        json_encode($data)
+    );
+    if(empty($data["nome"])){
+        $error = true;
+        $_SESSION ["msg"] = "<div class='alert alert-success alert-dismissible text-center'> "
+            . "<button type='button' class='close' data-dismiss='alert'>"
+            . "<span aria-hidden='true'>&times;</span>"
+            . "</button><strong>Aviso!&nbsp;</stron>"
+            . "Nível de acesso cadastrado com sucesso.</div>";
+        $url_return = pg . "/list/list_niveis_acesso";
+    }
+    if(!empty($data["position"])){
+        $sql_position = "SELECT position FROM access_level ORDER BY position DESC LIMIT 1";
+        $res_position = $conn ->prepare($sql_position);
+        $res_position ->execute();
+        $row_position = $res_position ->fetch(PDO::FETCH_ASSOC);
+
+    } else {
+
+    }
+    /*if (!$dados_validos) {
         $erro = true;
         $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible text-center'> "
-                . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
+                . "<button type='button' class='close' data-dismiss='alert'>"
                 . "<span aria-hidden='true'>&times;</span>"
                 . "</button><strong>Aviso!&nbsp;</stron>"
                 . "Necessário preencher todos os campos.</div>";
@@ -72,12 +93,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $url_destino = pg . "/register/reg_niveis_acesso";
             header("Location: $url_destino");
         }
-    }
+    }*/
 } else {
     $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible text-center'> "
-            . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
+            . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
-            . "</button><strong>Aviso!&nbsp;</stron>"
+            . "</button><strong>Whoops!&nbsp;</stron>"
             . "Erro ao carregar a página!</div>";
     $url_destino = pg . "/list/list_niveis_acesso";
     header("Location: $url_destino");

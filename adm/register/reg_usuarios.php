@@ -46,7 +46,7 @@ if (!isset($_SESSION['check'])) {
         <div class="form-group">
             <label for="cel" class="control-label col-sm-2">Celular</label>
             <div class="col-sm-10">
-                <input type="text" name="cel" id="cel" class="form-control celular" placeholder="(99) 99999-9999" value="<?php if(isset($_SESSION['dados']['cel'])){echo $_SESSION['dados']['cel'];} elseif(!empty($rowCliente['celular'])){ echo $rowCliente['celular']; } ?>" <?php if(($busca||$cliente) && $found){ echo "disabled";} ?>/>
+                <input type="text" name="cel" id="cel" class="form-control celular" placeholder="(99) 99999-9999"/>
             </div>
         </div>
         <div class="form-group">
