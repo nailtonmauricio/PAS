@@ -24,7 +24,7 @@ if (!isset($_SESSION["check"])) {
         <div class="form-group">
             <label for="nome" class="col-sm-2 control-label">Nome</label>
             <div class="col-sm-10">
-                <input type="text" name="nome" class="form-control text-uppercase" id="nome" placeholder="Nome do Nível de Acesso" value="<?php if(isset($_SESSION["data"]["name"])){ echo $_SESSION["data"]["name"];}?>" autofocus pattern="[a-z 0-9]{4,}[^\s]{2,}" required/>
+                <input type="text" name="nome" class="form-control text-uppercase" id="nome" placeholder="Nome do Nível de Acesso" value="<?php if(isset($_SESSION["data"]["name"])){ echo $_SESSION["data"]["name"];}?>" autofocus pattern="[a-z 0-9]{4,}" required/>
             </div>
         </div>
         <div class="form-group">
@@ -36,10 +36,10 @@ if (!isset($_SESSION["check"])) {
                         $sql_perfil = "SELECT id, UPPER(name) AS nome, position FROM access_level WHERE id !=1 AND situation = 1";
                         $res_perfil = $conn->prepare($sql_perfil);
                         $res_perfil ->execute();
-                        $res_perfil ->fetch(PDO::FETCH_ASSOC);
-                        foreach($res_perfil as $row_perfil):
+                        $row_perfil = $res_perfil ->fetchAll(PDO::FETCH_ASSOC);
+                        foreach($row_perfil as $perfil):
                     ?>
-                        <option value="<?=$row_perfil["id"]?>"><?=$row_perfil["nome"]?></option>
+                        <option value="<?=$perfil["id"]?>"><?=$perfil["nome"]?></option>
                     <?php
                         endforeach;
                     ?>

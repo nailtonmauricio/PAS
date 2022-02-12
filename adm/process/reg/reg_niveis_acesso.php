@@ -1,7 +1,7 @@
 <?php
 
-if (!isset($_SESSION['check'])) {
-    $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible'> "
+if (!isset($_SESSION["check"])) {
+    $_SESSION ["msg"] = "<div class='alert alert-danger alert-dismissible'> "
             . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
             . "</button><strong>Whoops!&nbsp;</stron>"
@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $error = false;
     var_dump(
         $error,
-        json_encode($data)
+        $data
     );
     if(empty($data["nome"])){
         $error = true;
@@ -26,11 +26,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             . "Nível de acesso cadastrado com sucesso.</div>";
         $url_return = pg . "/list/list_niveis_acesso";
     }
-    if(!empty($data["position"])){
-        $sql_position = "SELECT position FROM access_level ORDER BY position DESC LIMIT 1";
+    if(!empty($data["perfil"])){
+        $sql_position = "SELECT position FROM access_level WHERE id =:id ORDER BY position";
         $res_position = $conn ->prepare($sql_position);
+        $res_position ->bindValue(":id", $data["perfil"], PDO::PARAM_INT);
         $res_position ->execute();
         $row_position = $res_position ->fetch(PDO::FETCH_ASSOC);
+
+        var_dump(
+            $row_position
+        );
+
+        $sql = "INSERT INTO access_level (name, position) VALUES(:name, :position)";
+        $res = $conn ->prepare($sql);
+        $res ->bindValue(":name", $data["nome"]);
+        $res ->bindValue(":position", $row_position["position"], PDO::PARAM_INT);
+        $res ->execute();
+
+        var_dump(
+            $res
+        );
 
     } else {
 
