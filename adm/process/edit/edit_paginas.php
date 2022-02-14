@@ -1,6 +1,6 @@
 <?php
-// OBS: Falta criar a validação para caso o usuário apague algum campo que é obrigatório.
-if (!isset($_SESSION['check'])) {
+
+if (!isset($_SESSION["check"])) {
     $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible'> "
             . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
@@ -9,55 +9,48 @@ if (!isset($_SESSION['check'])) {
     header("Location: login.php");
 }
 
-//$editpagina = filter_input(INPUT_POST, 'btnEditar', FILTER_SANITIZE_STRING);
+if($_SERVER["REQUEST_METHOD"] == "POST"){
+    $data = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRIPPED);
+    var_dump(
+        $data
+    );
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $sql_info = "SELECT name, path, description FROM pages WHERE id =:id";
+    $res_info = $conn ->prepare($sql_info);
+    $res_info ->bindValue(":id", $data["id"], PDO::PARAM_INT);
+    $res_info ->execute();
+    $row_info = $res_info ->fetch(PDO::FETCH_ASSOC);
+    var_dump(
+        $row_info
+    );
 
-    $dados = filter_input_array(INPUT_POST, FILTER_DEFAULT);
-    $erro = false;
-    //$dados_validos = vdados($dados);
-    //var_dump($dados_validos);
-    if ($erro) {
-        $_SESSION['dados'] = $dados;
-        $url_destino = pg . "/register/reg_paginas";
-        header("Location: $url_destino");
-    } else {
-        $sql = "UPDATE paginas SET
-                nome = '" . $dados['nome'] . "',
-                endereco = '" . $dados['endereco'] . "',
-                descricao = '" . $dados['descricao'] . "',
-                modified = NOW() WHERE id = '".$dados['id']."'";
-        mysqli_set_charset($conn, "utf8");
-        $result = mysqli_query($conn, $sql);
-        //var_dump($sql);
-        //var_dump($result);
-        if (mysqli_affected_rows($conn)) {
-            unset($_SESSION['dados']);
-            $_SESSION ['msg'] = "<div class='alert alert-success alert-dismissible text-center'> "
-                    . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
-                    . "<span aria-hidden='true'>&times;</span>"
-                    . "</button><strong>Aviso!&nbsp;</stron>"
-                    . "Página atualizada com sucesso!</div>";
-            $url_destino = pg . "/list/list_paginas";
-            header("Location: $url_destino");
-        } else {
-            $_SESSION['dados'] = $dados;
-            $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible text-center'> "
-                    . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
-                    . "<span aria-hidden='true'>&times;</span>"
-                    . "</button><strong>Aviso!&nbsp;</stron>"
-                    . "Erro ao atualizar página!</div>";
-            $url_destino = pg . "/edit/edit_paginas";
-            header("Location: $url_destino");
-        }
+    if($data["nome"] !== $row_info["name"]){
+        $sql = "UPDATE pages SET name =:name, modified = CURRENT_TIMESTAMP WHERE id =:id";
+        $res = $conn ->prepare($sql);
+        $res ->bindValue(":name", empty($data["nome"])?NULL:$data["nome"]);
+        $res ->bindValue(":id", $data["id"], PDO::PARAM_INT);
+        $res ->execute();
     }
-} else {
-    $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible text-center'> "
-            . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
-            . "<span aria-hidden='true'>&times;</span>"
-            . "</button><strong>Aviso!&nbsp;</stron>"
-            . "Erro ao carregar a página!</div>";
-    $url_destino = pg . "/list/list_paginas";
-    header("Location: $url_destino");
-}
+    elseif ($data["endereco"] !== $row_info["path"]){
+        $sql = "UPDATE pages SET path =:path, modified = CURRENT_TIMESTAMP WHERE id =:id";
+        $res = $conn ->prepare($sql);
+        $res ->bindValue(":path", empty($data["endereco"])?NULL:$data["endereco"]);
+        $res ->bindValue(":id", $data["id"], PDO::PARAM_INT);
+        $res ->execute();
+    }
+    elseif ($data["descricao"] !== $row_info["description"]){
+        $sql = "UPDATE pages SET description =:description, modified = CURRENT_TIMESTAMP WHERE id =:id";
+        $res = $conn ->prepare($sql);
+        $res ->bindValue(":description", empty($data["descricao"])?NULL:$data["descricao"]);
+        $res ->bindValue(":id", $data["id"], PDO::PARAM_INT);
+        $res ->execute();
+    }
 
+    $_SESSION ["msg"] = "<div class='alert alert-success alert-dismissible text-center'> "
+        . "<button type='button' class='close' data-dismiss='alert'>"
+        . "<span aria-hidden='true'>&times;</span>"
+        . "</button><strong>Aviso!&nbsp;</stron>"
+        . "Página atualizada com sucesso!</div>";
+    $url_return = pg . "/list/list_paginas";
+    header("Location: $url_return");
+}

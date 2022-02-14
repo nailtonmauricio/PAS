@@ -2,7 +2,7 @@
 
 if (!isset($_SESSION['check'])) {
     $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible'> "
-            . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
+            . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
             . "</button><strong>Aviso!&nbsp;</stron>"
             . "Área restrita, faça login para acessar.</div>";
@@ -20,8 +20,8 @@ if (!isset($_SESSION['check'])) {
             unset($_SESSION['msg']);
         }
         /* Verificar botoes */
-        $button_register = laod('register/reg_recados', $conn);
-        $button_edit = laod('process/edit/proc_edit_recados', $conn);
+        $button_register = load('register/reg_recados', $conn);
+        $button_edit = load('process/edit/proc_edit_recados', $conn);
         // Início da paginação, recebe o valor do número da página atual 
         $pg_rec = filter_input(INPUT_GET, 'pg', FILTER_SANITIZE_NUMBER_INT);
         $pg = (!empty($pg_rec)) ? $pg_rec : 1;
