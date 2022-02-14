@@ -110,7 +110,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
           `created` timestamp NOT NULL DEFAULT current_timestamp(),
           `modified` timestamp NULL DEFAULT NULL,
           PRIMARY KEY (`id`),
-          FOREIGN KEY (`al_id`) REFERENCES access_level (`id`)
+          FOREIGN KEY (`al_id`) REFERENCES access_level (`id`),
+          FOREIGN KEY (`page_id`) REFERENCES pages (`id`)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
         $conn ->exec($sql_page_access_level);
         $insert_page_access_level = "INSERT INTO `page_access_level` (`id`, `al_id`, `page_id`, `access`, `menu`, `created`, `modified`) VALUES
@@ -138,7 +139,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         (22, 1, 22, 1, 0, '2022-02-08 19:46:25', NULL),
         (23, 1, 23, 1, 0, '2022-02-08 19:47:19', NULL),
         (24, 1, 24, 1, 0, '2022-02-09 02:31:56', NULL),
-        (25, 1, 25, 1, 1, '2022-02-09 18:15:00', '2022-02-09 18:15:13'),
+        (25, 1, 25, 1, 1, '2022-02-09 18:15:00', NULL),
         (26, 1, 26, 1, 0, '2022-02-09 19:12:13', NULL)";
         $conn ->exec($insert_page_access_level);
 

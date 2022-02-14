@@ -47,6 +47,26 @@ if (!isset($_SESSION["check"])) {
             </div>
         </div>
         <div class="form-group">
+            <label for="position" class="col-sm-2 control-label">Posição</label>
+            <div class="col-sm-10">
+                <select name="position" id="position" class="form-control">
+                    <option value="">[SELECIONE]</option>
+                    <?php
+                    $sql_position = "SELECT position , UPPER(name) AS name FROM access_level WHERE id >=:id AND situation = 1";
+                    $res_position = $conn->prepare($sql_position);
+                    $res_position ->bindValue(":id", $_SESSION["credentials"]["position"], PDO::PARAM_INT);
+                    $res_position->execute();
+                    $row_position = $res_position ->fetchAll(PDO::FETCH_ASSOC);
+                    foreach($row_position as $position):
+                        ?>
+                        <option value="<?=$position["position"]?>"><?=$position["name"]?></option>
+                    <?php
+                    endforeach;
+                    ?>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
             <div class="col-sm-offset-2 col-sm-10">
                 <button class='btn btn-xs btn-success pull-right'>
                     <span class='glyphicon glyphicon-floppy-saved'></span> Salvar

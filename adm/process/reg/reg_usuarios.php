@@ -13,7 +13,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     $data = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
     var_dump(
         $data,
-        json_encode($data)
+        $jse = json_encode($data),
+        $jsd = json_decode($jse)
     );
 }
 
