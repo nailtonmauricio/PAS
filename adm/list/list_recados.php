@@ -99,14 +99,6 @@ if (!isset($_SESSION["check"])) {
                                 if (!$post["verify"]) {
                                     echo "<a href='" . pg . "/register/reg_recados?idRecado=".$post["id"]."&id=" . $post["sender"] . "'><button type='button' class='btn btn-xs btn-warning' data-toggle='tooltip' data-placement='top' title='Responder mensagem.'><span class='fas fa-reply'></span></button></a> ";
                                 }
-                                /*if ($button_edit && ($post["verify"] == 0)) {
-                                    echo "<a href= '" . pg . "/process/edit/proc_edit_recados?id=" . $post["id"] . "'><button type='button' class='btn btn-xs btn-danger' data-toggle='tooltip' data-placement='top' title='Confirmar leitura.'><span class='fas fa-check-square'></span></button></a> ";
-                                } else {
-                                    echo "<a href='#'><button type='button' class='btn btn-xs btn-info' data-toggle='tooltip' data-placement='top' title='Leitura confirmada.'><span class='fas fa-check-square'></span></button></a> ";
-                                }
-                                if ($button_register && ($post["verify"] == 0)) {
-                                    echo "<a href='" . pg . "/register/reg_recados?idRecado=".$post["id"]."&id=" . $post["sender"] . "'><button type='button' class='btn btn-xs btn-warning' data-toggle='tooltip' data-placement='top' title='Responder mensagem.'><span class='fas fa-reply'></span></button></a> ";
-                                }*/
                                 ?>
                             </td>
                         </tr>

@@ -1,7 +1,7 @@
 <?php
 
-if (!isset($_SESSION['check'])) {
-    $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible'> "
+if (!isset($_SESSION["check"])) {
+    $_SESSION ["msg"] = "<div class='alert alert-danger alert-dismissible'> "
             . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
             . "</button><strong>Aviso!&nbsp;</stron>"
@@ -11,11 +11,36 @@ if (!isset($_SESSION['check'])) {
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     $data = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $error = false;
     var_dump(
-        $data,
-        $jse = json_encode($data),
-        $jsd = json_decode($jse)
+        $data
     );
+
+    $sql_name_verify = "SELECT COUNT(id) AS count FROM users WHERE user_name =:name";
+    $res_name_verify = $conn ->prepare($sql_name_verify);
+    $res_name_verify ->bindValue(":name", $data["usuario"]);
+    $res_name_verify ->execute();
+    $row_name_verify = $res_name_verify ->fetch(PDO::FETCH_ASSOC);
+
+    var_dump(
+        $row_name_verify
+    );
+    if($row_name_verify["count"] >0){
+        $error = true;
+        $_SESSION ["msg"] = "<div class='alert alert-danger alert-dismissible text-center'> "
+            . "<button type='button' class='close' data-dismiss='alert'>"
+            . "<span aria-hidden='true'>&times;</span>"
+            . "</button><strong>Whoops!&nbsp;</stron>"
+            . "Nome de usuário não pode ser utilizado.</div>";
+    }
+    elseif(strlen($data["name"])<4){
+        $error = true;
+        $_SESSION ["msg"] = "<div class='alert alert-danger alert-dismissible text-center'> "
+            . "<button type='button' class='close' data-dismiss='alert'>"
+            . "<span aria-hidden='true'>&times;</span>"
+            . "</button><strong>Whoops!&nbsp;</stron>"
+            . "Nome de usuário deve ter no mínimo 4 caracteres e no máximo 15.</div>";
+    }
 }
 
 /*if ($_SERVER['REQUEST_METHOD'] == 'POST') {
