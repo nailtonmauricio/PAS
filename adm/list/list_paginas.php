@@ -67,7 +67,7 @@ if (!isset($_SESSION['check'])) {
                 </form>
             </div>
             <?php
-                $busca = filter_input(INPUT_GET, 'q', FILTER_SANITIZE_STRING);
+                $busca = filter_input(INPUT_GET, "q", FILTER_SANITIZE_STRING);
 
                 if(!empty($busca)){
                     

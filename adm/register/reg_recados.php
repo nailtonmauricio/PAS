@@ -1,7 +1,7 @@
 <?php
 
 if (!isset($_SESSION["check"])) {
-    $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible'> "
+    $_SESSION ["msg"] = "<div class='alert alert-danger alert-dismissible'> "
             . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
             . "</button><strong>Aviso!&nbsp;</stron>"
@@ -27,30 +27,21 @@ if (!isset($_SESSION["check"])) {
         <div class="form-group">
             <label for="destinatario_id" class="col-sm-2 control-label">Destinatário</label>
             <div class="col-sm-10">
-                <?php
-                    if(!empty($id)){
-                        echo "<input name='destinatario_id' class='hidden' id='destinatario_id' value='$id'/>";
-                        echo "<input name='idRecado' class='hidden' id='idRecado' value='$idRecado'/>";
-                        $sqlDestinatario = "SELECT nome FROM usuarios WHERE id = '$id'";
-                        $resDestinatario = mysqli_query($conn, $sqlDestinatario);
-                        $rowDestinatario = mysqli_fetch_assoc($resDestinatario);
-                        echo "<input name='destinatario' class='form-control' id='destinatario' value='".$rowDestinatario['nome']."' disabled/>";
-                    } else {
-                ?>
                 <select name="destinatario_id" class="form-control">
                     <option value="*">[Todos]</option>
                     <?php
-                        /*$sqlDestinatario = "SELECT id, nome FROM usuarios WHERE stu_id = 1 ORDER BY nome";
-                        $resDestinatario = mysqli_query($conn, $sqlDestinatario);
-                        while ($rowDestinatario = mysqli_fetch_assoc($resDestinatario)) {
-                            echo "<option value= '" . $rowDestinatario ["id"] . "'>" . $rowDestinatario["nome"] ."</option>";
-                        }*/
+                        $sql = "SELECT name FROM users WHERE id !=:id";
+                        $res = $conn ->prepare($sql);
+                        $res ->bindValue(":id", $_SERVER["credentials"]["id"], PDO::PARAM_INT);
+                        $res ->execute();
+                        $row = $res ->fetch(PDO::FETCH_ASSOC);
+                        foreach ($row as $user):
+                    ?>
+                    <option value="<?=$user["id"]?>"><?=$user["name"]?></option>
+                    <?php
+                        endforeach;
                     ?>
                 </select>
-                <?php
-                    //Fechamento do select
-                    }
-                ?>
             </div>
         </div>
         <div class="form-group">

@@ -1,8 +1,8 @@
 <?php
 ob_start();
-if (!isset($_SESSION['check'])) {
-    $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible text-center'> "
-            . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
+if (!isset($_SESSION["check"])) {
+    $_SESSION ["msg"] = "<div class='alert alert-danger alert-dismissible text-center'> "
+            . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
             . "</button><strong>Aviso!&nbsp;</stron>"
             . "Área restrita, faça login para acessar.</div>";
@@ -12,9 +12,9 @@ if (!isset($_SESSION['check'])) {
 <div class="well conteudo">
     <?php
 
-        if (isset($_SESSION['msg'])) {
-            echo $_SESSION['msg'];
-            unset($_SESSION['msg']);
+        if (isset($_SESSION["msg"])) {
+            echo $_SESSION["msg"];
+            unset($_SESSION["msg"]);
         }
     ?>
     <h1 class="text-center text-capitalize">Bem Vindo(a), <?php echo $_SESSION["credentials"]['name']."!"; ?></h1>
@@ -22,23 +22,23 @@ if (!isset($_SESSION['check'])) {
 <div class="well conteudo col-sm-12">
     <?php
         $sqlMsg = "SELECT COUNT(id) AS totMsg FROM posts
-        WHERE recipient_id =:user_id";
+        WHERE recipient_id =:user_id AND verify = 0";
         $resMsg = $conn ->prepare($sqlMsg);
         $resMsg ->bindValue(":user_id", $_SESSION["credentials"]["id"], PDO::PARAM_INT);
         $resMsg ->execute();
         $rowMsg = $resMsg ->fetch(PDO::FETCH_ASSOC);
 
-        if($rowMsg['totMsg'] == 1){
+        if($rowMsg["totMsg"] == 1){
             $recado = "<div class='alert alert-warning alert-dismissible text-center'> "
-            . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
+            . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
             . "</button><a href='".pg."/list/list_recados'><strong>Aviso!&nbsp;</stron>"
             . "Você possui ".$rowMsg['totMsg']." recado não lido.</a></div>";
             echo $recado;
             unset($recado);
-        } elseif($rowMsg['totMsg'] > 1){
+        } elseif($rowMsg["totMsg"] > 1){
             $recado = "<div class='alert alert-warning alert-dismissible text-center'> "
-            . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
+            . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
             . "</button><a href='".pg."/list/list_recados'><strong>Aviso!&nbsp;</stron>"
             . "Você possui ".$rowMsg['totMsg']." recados não lidos.</a></div>";

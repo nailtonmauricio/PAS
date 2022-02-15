@@ -170,7 +170,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
           `sender_id` int(11) NOT NULL,
           `recipient_id` int(11) NOT NULL,
           `message` varchar(500) NOT NULL,
-          `created` timestamp NOT NULL DEFAULT current_timestamp(), 
+          `verify` boolean default false,
+          `created` timestamp NOT NULL DEFAULT current_timestamp(),
+          `modified`  timestamp NULL DEFAULT NULL, 
           PRIMARY KEY (`id`),
           FOREIGN KEY (`sender_id`) REFERENCES users (`id`),
           FOREIGN KEY (`recipient_id`) REFERENCES users (`id`)

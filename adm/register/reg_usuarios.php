@@ -1,10 +1,10 @@
 <?php
-// Verifica se a sessção foi iniciada, caso não tenha sido a linha 10 redireciona para a página de login.
-if (!isset($_SESSION['check'])) {
-    $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible'> "
-            . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
+
+if (!isset($_SESSION["check"])) {
+    $_SESSION ["msg"] = "<div class='alert alert-danger alert-dismissible'> "
+            . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
-            . "</button><strong>Aviso!&nbsp;</stron>"
+            . "</button><strong>Whoops!&nbsp;</stron>"
             . "Área restrita, faça login para acessar.</div>";
     header("Location: login.php");
 }
@@ -13,13 +13,11 @@ if (!isset($_SESSION['check'])) {
     <div class="pull-right">
         <a href="<?php echo pg . '/list/list_usuarios'; ?>"><button type="button" class="btn btn-xs btn-primary"><span class="glyphicon glyphicon-list"></span> Listar</button></a>
     </div>
-    <div class="page-header">
-        <!--<h1>Cadastrar Usuários</h1>-->
-    </div>
+    <div class="page-header"></div>
     <?php
-    if (isset($_SESSION['msg'])) {
-        echo $_SESSION['msg'];
-        unset($_SESSION['msg']);
+    if (isset($_SESSION["msg"])) {
+        echo $_SESSION["msg"];
+        unset($_SESSION["msg"]);
     }
     ?>
     <form name="cadUsuarios" method="post" action="<?php echo pg; ?>/process/reg/reg_usuarios" class="form-horizontal" enctype="multipart/form-data">
@@ -72,48 +70,20 @@ if (!isset($_SESSION['check'])) {
                     <select class="form-control" name="nva_id">
                         <option value="">[Selecione]</option>
                         <?php
-                        $sql_nva = "SELECT id, UPPER(nome) AS nome FROM nv_acessos WHERE ordem >= (SELECT ordem FROM nv_acessos WHERE id ='" . $_SESSION['nva_user_id'] . "') AND situacao = 1 ORDER BY id";
-                        $result_nva = mysqli_query($conn, $sql_nva);
-                        while ($row_nva = mysqli_fetch_array($result_nva)) {
-                            if (isset($_SESSION['dados']['nva_id']) AND ( $_SESSION['dados']['nva_id']) == $row_nva ['id']) {
-                                echo "<option value= '" . $row_nva ['id'] . "' selected>" . $row_nva ['nome'] . "</option>";
-                            } else {
-                                echo "<option value= '" . $row_nva ['id'] . "'>" . $row_nva ['nome'] . "</option>";
-                            }
-                        }
-                        ?>
-                    </select>
-                    <span class="input-group-btn">
-                        <button class="btn btn-danger" type="button">
-                            <a href="<?php echo pg; ?>/register/reg_niveis_acesso" style="color: #ffffff;">
-                                <span class="glyphicon glyphicon-option-horizontal"></span>
-                            </a>
-                        </button>
-                    </span>
-                </div>
-
-            </div>
-        </div>
-        <div class="row form-group">
-            <label for="unidade" class="col-sm-2 control-label">Unidade</label>
-            <div class="col-sm-10">
-                <div class="input-group">
-                    <select class="form-control" name="unidade_id">
-                        <option value="">[Selecione]</option>
+                        $sql = "SELECT id , UPPER(name) AS name FROM access_level WHERE id >=:id AND situation = 1";
+                        $res = $conn->prepare($sql);
+                        $res ->bindValue(":id", $_SESSION["credentials"]["id"], PDO::PARAM_INT);
+                        $res->execute();
+                        $row = $res->fetchAll(PDO::FETCH_ASSOC);
+                        foreach($row as $access):
+                            ?>
+                            <option value="<?=$access["id"]?>"><?=$access["name"]?></option>
                         <?php
-                        $sql_unidade = "SELECT id, UPPER(nome) AS nome FROM unidades WHERE situacao = '1' ORDER BY nome";
-                        $result_unidade = mysqli_query($conn, $sql_unidade);
-                        while ($row_unidade = mysqli_fetch_assoc($result_unidade)) {
-                            if (isset($_SESSION['dados']['unidade_id']) AND ( $_SESSION['dados']['unidade_id']) == $row_unidade ['id']) {
-                                echo "<option value= '" . $row_unidade ['id'] . "' selected>" . $row_unidade ['nome'] . "</option>";
-                            } else {
-                                echo "<option value= '" . $row_unidade ['id'] . "'>" . $row_unidade ['nome'] . "</option>";
-                            }
-                        }
+                        endforeach;
                         ?>
                     </select>
                     <span class="input-group-btn">
-                        <button class="btn btn-danger" type="button">
+                        <button class="btn btn-success" type="button">
                             <a href="<?php echo pg; ?>/register/reg_niveis_acesso" style="color: #ffffff;">
                                 <span class="glyphicon glyphicon-option-horizontal"></span>
                             </a>

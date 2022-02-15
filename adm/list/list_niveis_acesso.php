@@ -1,8 +1,8 @@
 <?php
 
-if (!isset($_SESSION['check'])) {
-    $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible'> "
-            . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
+if (!isset($_SESSION["check"])) {
+    $_SESSION ["msg"] = "<div class='alert alert-danger alert-dismissible'> "
+            . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
             . "</button><strong>Aviso!&nbsp;</stron>"
             . "Área restrita, faça login para acessar.</div>";
@@ -22,15 +22,15 @@ if (!isset($_SESSION['check'])) {
     ?>
     <div class="page-header">
         <?php
-        if (isset($_SESSION['msg'])) {
-            echo $_SESSION['msg'];
-            unset($_SESSION['msg']);
+        if (isset($_SESSION["msg"])) {
+            echo $_SESSION["msg"];
+            unset($_SESSION["msg"]);
         }
         /* Verificar botoes */
-        $button_perm = load('list/list_permissoes', $conn);
-        $button_edit = load('edit/edit_niveis_acesso', $conn);
-        $button_view = load('viewer/view_niveis_acesso', $conn);
-        $button_delete = load('process/del/del_niveis_acesso', $conn);
+        $button_perm = load("list/list_permissoes", $conn);
+        $button_edit = load("edit/edit_niveis_acesso", $conn);
+        $button_view = load("viewer/view_niveis_acesso", $conn);
+        $button_delete = load("process/del/del_niveis_acesso", $conn);
 
         // Início da paginação 
         $pg_rec = filter_input(INPUT_GET, 'pg', FILTER_SANITIZE_NUMBER_INT);
