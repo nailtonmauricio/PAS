@@ -1,7 +1,7 @@
 <?php
 
-if (!isset($_SESSION['check'])) {
-    $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible'> "
+if (!isset($_SESSION["check"])) {
+    $_SESSION ["msg"] = "<div class='alert alert-danger alert-dismissible'> "
             . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
             . "</button><strong>Aviso!&nbsp;</stron>"
@@ -71,7 +71,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         if ($res_update ->rowCount()) {
             unset($_SESSION["dados"]);
             $_SESSION ["msg"]= "<div class='alert alert-success alert-dismissible text-center'> "
-                . "<button type='button' class='close' data-dismiss='alert' area-label='Close'>"
+                . "<button type='button' class='close' data-dismiss='alert'>"
                 . "<span aria-hidden='true'>&times;</span>"
                 . "</button><strong>Aviso!&nbsp;</stron>"
                 . "Usuário editado com sucesso</div>";
@@ -101,7 +101,55 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             header("Location: $url_return");
         }
     }
-} else {
+} elseif($_SERVER["REQUEST_METHOD"] == "GET"){
+    $data = filter_input(INPUT_GET, "id",FILTER_SANITIZE_NUMBER_INT);
+
+    var_dump(
+        $data
+    );
+
+    $sql_verify = "SELECT situation FROM users WHERE id =:id";
+    $res_verify = $conn->prepare($sql_verify);
+    $res_verify ->bindValue(":id", $data);
+    $res_verify ->execute();
+    $row_verify = $res_verify ->fetch(PDO::FETCH_ASSOC);
+
+    var_dump(
+        $row_verify
+    );
+
+    try {
+        $sql_update = "UPDATE users SET situation =:situation WHERE id =:id";
+        $res_update = $conn ->prepare($sql_update);
+        $res_update ->bindValue(":situation", $row_verify["situation"] == 1?0:1, PDO::PARAM_INT);
+        $res_update ->bindValue(":id", $data, PDO::PARAM_INT);
+        $res_update ->execute();
+
+        if($res_update ->rowCount()){
+            switch ($row_verify["situation"]){
+                case "0":
+                    $_SESSION ["msg"] = "<div class='alert alert-success alert-dismissible text-center'> "
+                        . "<button type='button' class='close' data-dismiss='alert'>"
+                        . "<span aria-hidden='true'>&times;</span>"
+                        . "</button><strong>Aviso!&nbsp;</stron>"
+                        . "Usuário liberado com sucesso!</div>";
+                    break;
+                case "1":
+                    $_SESSION ["msg"] = "<div class='alert alert-success alert-dismissible text-center'> "
+                        . "<button type='button' class='close' data-dismiss='alert'>"
+                        . "<span aria-hidden='true'>&times;</span>"
+                        . "</button><strong>Aviso!&nbsp;</stron>"
+                        . "Usuário bloqueado com sucesso!</div>";
+                    break;
+            }
+            $url_return = pg . "/list/list_usuarios";
+            header("Location: $url_return");
+        }
+    } catch (PDOException $e){
+        echo $e ->getMessage();
+    }
+} else
+{
     $_SESSION ["msg"] = "<div class='alert alert-danger alert-dismissible text-center'> "
             . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"

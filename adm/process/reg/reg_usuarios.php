@@ -10,7 +10,7 @@ if (!isset($_SESSION["check"])) {
 }
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
-    $data = filter_input_array(INPUT_POST, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
+    $data = filter_input_array(INPUT_POST, FILTER_SANITIZE_SPECIAL_CHARS);
     $error = false;
     var_dump(
         $data
@@ -32,14 +32,44 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             . "<span aria-hidden='true'>&times;</span>"
             . "</button><strong>Whoops!&nbsp;</stron>"
             . "Nome de usuário não pode ser utilizado.</div>";
-    }
-    elseif(strlen($data["name"])<4){
+        $url_return = pg . "/register/reg_usuarios";    }
+    elseif(strlen($data["nome"])<4){
         $error = true;
         $_SESSION ["msg"] = "<div class='alert alert-danger alert-dismissible text-center'> "
             . "<button type='button' class='close' data-dismiss='alert'>"
             . "<span aria-hidden='true'>&times;</span>"
             . "</button><strong>Whoops!&nbsp;</stron>"
             . "Nome de usuário deve ter no mínimo 4 caracteres e no máximo 15.</div>";
+        $url_return = pg . "/register/reg_usuarios";
+    }
+
+    if($error){
+        //CRIAR UMA SESÃO COM OS DADOS PASSADOS PELO FORM PARA QUE POSSA SER RETORNADO NO FORMULÁRIO
+
+        header("Location: $url_return");
+    } else {
+        try {
+            $sql = "INSERT INTO users (name, email, cell_phone, user_name, user_password, access_level) VALUES (:name, :email, :cell_phone, :user_name, :user_password, :access_level)";
+            $res = $conn ->prepare($sql);
+            $res ->bindValue(":name", $data["nome"]);
+            $res ->bindValue(":email", filter_var($data["email"], FILTER_VALIDATE_EMAIL)?$data["email"]:NULL);
+            $res ->bindValue(":cell_phone", !empty($data["cel"])?str_replace(["(", ")", "-", " "], "", $data["cel"]): NULL);
+            $res ->bindValue("user_name", mb_strtolower($data["usuario"]));
+            $res ->bindValue(":user_password", password_hash($data["senha"], PASSWORD_DEFAULT));
+            $res ->bindValue(":access_level", empty($data["nva_id"])?1:$data["nva_id"], PDO::PARAM_INT);
+            $res ->execute();
+
+            if($res ->rowCount()){
+                $_SESSION ["msg"] = "<div class='alert alert-success alert-dismissible text-center'> "
+                    . "<button type='button' class='close' data-dismiss='alert'>"
+                    . "<span aria-hidden='true'>&times;</span>"
+                    . "</button><strong>Aviso!&nbsp;</stron>"
+                    . "Novo usuário cadastrado com sucesso.</div>";
+                $url_return = pg . "/list/list_usuarios";
+            }
+        } catch (PDOException $e){
+            echo $e ->getMessage();
+        }
     }
 }
 

@@ -134,12 +134,12 @@ if (!isset($_SESSION["check"])) {
                                 #inicio da alteração 
                                 if ($user["situation"] == 1) {
                                 					  	
-                                    echo "<a href='" . pg . "/process/edit/edit_situacao?id=" . $user["id"] . "'>
+                                    echo "<a href='" . pg . "/process/edit/proc_edit_usuario?id=" . $user["id"] . "'>
                                           	<button type='button' class='btn btn-xs btn-default'><span class='fa fa-unlock'></span></button>
                                           </a>";
                                 } else {
                                                     	
-                                    echo "<a href='" . pg . "/process/edit/edit_situacao?id=" . $user["id"] . "'>
+                                    echo "<a href='" . pg . "/process/edit/proc_edit_usuario?id=" . $user["id"] . "'>
                                             <button type='button' class='btn btn-xs btn-default'><span class='fa fa-lock'></span></button>
                                           </a>";
                                                         
@@ -192,12 +192,12 @@ if (!isset($_SESSION["check"])) {
                                 #inicio da alteração 
                                 if ($user["situation"] == 1) {
                                 					  	
-                                    echo "<a href='" . pg . "/process/edit/edit_situacao?id=" . $user["id"] . "'>
+                                    echo "<a href='" . pg . "/process/edit/proc_edit_usuario?id=" . $user["id"] . "'>
                                           	<button type='button' class='btn btn-xs btn-default'><span class='fa fa-unlock'></span></button>
                                           </a>";
                                 } else {
                                                     	
-                                    echo "<a href='" . pg . "/process/edit/edit_situacao?id=" . $user["id"] . "'>
+                                    echo "<a href='" . pg . "/process/edit/proc_edit_usuario?id=" . $user["id"] . "'>
                                             <button type='button' class='btn btn-xs btn-default'><span class='fa fa-lock'></span></button>
                                           </a>";
                                                         
