@@ -126,11 +126,6 @@ if(in_array("config.txt", $config)){
         integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW"
         crossorigin="anonymous"></script>
 <script>
-    jQuery(function ($) {
-        $(".document").mask("999.999.999-99");
-        $(".phone").mask("(99) 99999-9999");
-        $(".contribution").mask("###.##0,00", {reverse: true});
-    });
     // Example starter JavaScript for disabling form submissions if there are invalid fields
     (function () {
         'use strict'

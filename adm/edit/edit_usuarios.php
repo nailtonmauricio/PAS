@@ -12,7 +12,7 @@ if (!isset($_SESSION['check'])) {
 $id = filter_input(INPUT_GET, "id", FILTER_SANITIZE_NUMBER_INT);
 
 if (!empty($id)) {
-    $sql = "SELECT u.name, u.email, u.cell_phone, u.user_name, u.user_password, u.situation, u.access_level, UPPER(al.name) AS nva FROM users AS u JOIN access_level AS al ON u.access_level = al.id  WHERE u.id =:user_id";
+    $sql = "SELECT u.name, u.email, u.cell_phone, u.user_name, u.user_password, u.situation, u.access_level, UPPER(al.name) AS nva, al.id AS nva_id FROM users AS u JOIN access_level AS al ON u.access_level = al.id  WHERE u.id =:user_id";
     $res = $conn ->prepare($sql);
     $res ->bindParam(":user_id", $id, PDO::PARAM_INT);
     $res ->execute();

@@ -1,7 +1,7 @@
 <?php
 
-	if (!isset($_SESSION['check'])) {
-	    $_SESSION ['msg'] = "<div class='alert alert-danger alert-dismissible'> "
+	if (!isset($_SESSION["check"])) {
+	    $_SESSION ["msg"] = "<div class='alert alert-danger alert-dismissible'> "
 	            . "<button type='button' class='close' data-dismiss='alert'>"
 	            . "<span aria-hidden='true'>&times;</span>"
 	            . "</button><strong>Aviso!&nbsp;</stron>"
@@ -73,11 +73,11 @@ if(!is_dir($diretorio)){
 }
 
 //Nome do arquivo de backup
-$data = date('Y-m-d_H-i-s');
+$data = date("Y-m-d_H-i-s");
 $nome_arquivo = $diretorio . "db_backup_".$data;
 //echo $nome_arquivo;
 
-$handle = fopen($nome_arquivo . '.sql', 'w+');
+$handle = fopen($nome_arquivo . ".sql", "w+");
 fwrite($handle, $result);
 fclose($handle);
 

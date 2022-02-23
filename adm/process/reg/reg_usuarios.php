@@ -33,7 +33,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             . "</button><strong>Whoops!&nbsp;</stron>"
             . "Nome de usuário não pode ser utilizado.</div>";
         $url_return = pg . "/register/reg_usuarios";    }
-    elseif(strlen($data["nome"])<4){
+    elseif(strlen($data["nome"]) < 4){
         $error = true;
         $_SESSION ["msg"] = "<div class='alert alert-danger alert-dismissible text-center'> "
             . "<button type='button' class='close' data-dismiss='alert'>"
@@ -66,6 +66,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     . "</button><strong>Aviso!&nbsp;</stron>"
                     . "Novo usuário cadastrado com sucesso.</div>";
                 $url_return = pg . "/list/list_usuarios";
+                header("Location: $url_return");
             }
         } catch (PDOException $e){
             echo $e ->getMessage();

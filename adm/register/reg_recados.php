@@ -30,11 +30,11 @@ if (!isset($_SESSION["check"])) {
                 <select name="destinatario_id" class="form-control">
                     <option value="*">[Todos]</option>
                     <?php
-                        $sql = "SELECT name FROM users WHERE id !=:id";
+                        $sql = "SELECT id, name FROM users WHERE id !=:id";
                         $res = $conn ->prepare($sql);
-                        $res ->bindValue(":id", $_SERVER["credentials"]["id"], PDO::PARAM_INT);
+                        $res ->bindValue(":id", $_SESSION["credentials"]["id"], PDO::PARAM_INT);
                         $res ->execute();
-                        $row = $res ->fetch(PDO::FETCH_ASSOC);
+                        $row = $res ->fetchAll(PDO::FETCH_ASSOC);
                         foreach ($row as $user):
                     ?>
                     <option value="<?=$user["id"]?>"><?=$user["name"]?></option>
